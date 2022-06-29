@@ -5,6 +5,7 @@ using System.Web.Http;
 using System.Web.Script.Serialization;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using static OPSWebServicesAPIBase.Models.ErrorText;
 
 namespace OPSWebServicesAPIBase.Controllers
 {
@@ -25,25 +26,37 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("QueryContractsAPI")]
         public ResultContractsInfo QueryContractsAPI()
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryContractsAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var responseI = client.GetAsync(urlBase).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryContractsAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultContractsInfo>(responseString);  
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var responseI = client.GetAsync(urlBase).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultContractsInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultContractsInfo response = new ResultContractsInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
 
@@ -56,25 +69,37 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("QueryZoneAPI")]
         public ResultZoneInfo QueryZoneAPI([FromBody] ZoneQuery zoneQuery)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryZoneAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var responseI = client.PostAsJsonAsync(urlBase, zoneQuery).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryZoneAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultZoneInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var responseI = client.PostAsJsonAsync(urlBase, zoneQuery).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultZoneInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultZoneInfo response = new ResultZoneInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
         /// <summary>
@@ -86,25 +111,37 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("QueryPlaceAPI")]
         public ResultPlaceInfo QueryPlaceAPI([FromBody] PlaceQuery placeQuery)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryPlaceAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var responseI = client.PostAsJsonAsync(urlBase, placeQuery).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryPlaceAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultPlaceInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var responseI = client.PostAsJsonAsync(urlBase, placeQuery).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultPlaceInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultPlaceInfo response = new ResultPlaceInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
 
@@ -125,25 +162,37 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("QueryParkingOperationWithTimeStepsAPI")]
         public ResultParkingStepsInfo QueryParkingOperationWithTimeStepsAPI([FromBody] ParkingStepsQuery parkingStepsQuery)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryParkingOperationWithTimeStepsAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var responseI = client.PostAsJsonAsync(urlBase, parkingStepsQuery).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryParkingOperationWithTimeStepsAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultParkingStepsInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var responseI = client.PostAsJsonAsync(urlBase, parkingStepsQuery).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultParkingStepsInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultParkingStepsInfo response = new ResultParkingStepsInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
         /// <summary>
@@ -155,25 +204,37 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("QueryParkingOperationWithMoneyStepsAPI")]
         public ResultParkingStepsInfo QueryParkingOperationWithMoneyStepsAPI([FromBody] ParkingStepsQuery parkingStepsQuery)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryParkingOperationWithMoneyStepsAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var responseI = client.PostAsJsonAsync(urlBase, parkingStepsQuery).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryParkingOperationWithMoneyStepsAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultParkingStepsInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var responseI = client.PostAsJsonAsync(urlBase, parkingStepsQuery).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultParkingStepsInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultParkingStepsInfo response = new ResultParkingStepsInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
 
@@ -195,25 +256,37 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("QueryParkingOperationForTimeAPI")]
         public ResultParkingTimeInfo QueryParkingOperationForTimeAPI([FromBody] ParkingTimeQuery parkingTimeQuery)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryParkingOperationForTimeAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var responseI = client.PostAsJsonAsync(urlBase, parkingTimeQuery).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryParkingOperationForTimeAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultParkingTimeInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var responseI = client.PostAsJsonAsync(urlBase, parkingTimeQuery).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultParkingTimeInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultParkingTimeInfo response = new ResultParkingTimeInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
         /// <summary>
@@ -233,25 +306,37 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("QueryParkingOperationForMoneyAPI")]
         public ResultParkingMoneyInfo QueryParkingOperationForMoneyAPI([FromBody] ParkingMoneyQuery parkingMoneyQuery)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryParkingOperationForMoneyAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var responseI = client.PostAsJsonAsync(urlBase, parkingMoneyQuery).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryParkingOperationForMoneyAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultParkingMoneyInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var responseI = client.PostAsJsonAsync(urlBase, parkingMoneyQuery).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultParkingMoneyInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultParkingMoneyInfo response = new ResultParkingMoneyInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
         /// <summary>
@@ -277,28 +362,40 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("ConfirmParkingOperationAPI")]
         public ResultParkingConfirmInfo ConfirmParkingOperationAPI([FromBody] ParkingConfirmQuery parkingConfirmQuery)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/ConfirmParkingOperationAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                string token;
-                Common.TryTokenRequest(Request, out token);
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var responseI = client.PostAsJsonAsync(urlBase, parkingConfirmQuery).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/ConfirmParkingOperationAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultParkingConfirmInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    string token;
+                    Common.TryTokenRequest(Request, out token);
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    var responseI = client.PostAsJsonAsync(urlBase, parkingConfirmQuery).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultParkingConfirmInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultParkingConfirmInfo response = new ResultParkingConfirmInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
         /// <summary>
@@ -318,25 +415,37 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("QueryUnParkingOperationAPI")]
         public ResultUnParkingQueryInfo QueryUnParkingOperationAPI([FromBody] UnParkingQuery unParkingQuery)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryUnParkingOperationAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var responseI = client.PostAsJsonAsync(urlBase, unParkingQuery).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryUnParkingOperationAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultUnParkingQueryInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var responseI = client.PostAsJsonAsync(urlBase, unParkingQuery).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultUnParkingQueryInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultUnParkingQueryInfo response = new ResultUnParkingQueryInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
         /// <summary>
@@ -361,28 +470,40 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("ConfirmUnParkingOperationAPI")]
         public ResultUnParkingConfirmInfo ConfirmUnParkingOperationAPI([FromBody] UnParkingConfirmQuery unParkingConfirmQuery)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/ConfirmUnParkingOperationAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                string token;
-                Common.TryTokenRequest(Request, out token);
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var responseI = client.PostAsJsonAsync(urlBase, unParkingConfirmQuery).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/ConfirmUnParkingOperationAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultUnParkingConfirmInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    string token;
+                    Common.TryTokenRequest(Request, out token);
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    var responseI = client.PostAsJsonAsync(urlBase, unParkingConfirmQuery).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultUnParkingConfirmInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultUnParkingConfirmInfo response = new ResultUnParkingConfirmInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
         /// <summary>
@@ -403,28 +524,40 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("QueryParkingStatusAPI")]
         public ResultParkingStatusInfo QueryParkingStatusAPI([FromBody] ParkingStatusQuery parkingStatusQuery)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryParkingStatusAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                string token;
-                Common.TryTokenRequest(Request, out token);
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var responseI = client.PostAsJsonAsync(urlBase, parkingStatusQuery).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryParkingStatusAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultParkingStatusInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    string token;
+                    Common.TryTokenRequest(Request, out token);
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    var responseI = client.PostAsJsonAsync(urlBase, parkingStatusQuery).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultParkingStatusInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultParkingStatusInfo response = new ResultParkingStatusInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
         /// <summary>
@@ -451,28 +584,40 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("ConfirmFinePaymentAPI")]
         public ResultFinePaymentConfirmInfo ConfirmFinePaymentAPI([FromBody] FinePaymentConfirmQuery finePaymentConfirmQuery)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/ConfirmFinePaymentAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                string token;
-                Common.TryTokenRequest(Request, out token);
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var responseI = client.PostAsJsonAsync(urlBase, finePaymentConfirmQuery).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/ConfirmFinePaymentAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultFinePaymentConfirmInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    string token;
+                    Common.TryTokenRequest(Request, out token);
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    var responseI = client.PostAsJsonAsync(urlBase, finePaymentConfirmQuery).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultFinePaymentConfirmInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultFinePaymentConfirmInfo response = new ResultFinePaymentConfirmInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
         /// <summary>
@@ -484,25 +629,37 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("QuerySectorsAPI")]
         public ResultSectorsInfo QuerySectorsAPI([FromBody] SectorsQuery sectorsQuery)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QuerySectorsAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var responseI = client.PostAsJsonAsync(urlBase, sectorsQuery).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QuerySectorsAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultSectorsInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var responseI = client.PostAsJsonAsync(urlBase, sectorsQuery).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultSectorsInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultSectorsInfo response = new ResultSectorsInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
         /// <summary>
@@ -514,25 +671,37 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("QueryStreetsAPI")]
         public ResultStreetsFullInfo QueryStreetsFullAPI([FromBody] StreetsQuery streetsQuery)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryStreetsAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var responseI = client.PostAsJsonAsync(urlBase, streetsQuery).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryStreetsAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultStreetsFullInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var responseI = client.PostAsJsonAsync(urlBase, streetsQuery).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultStreetsFullInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultStreetsFullInfo response = new ResultStreetsFullInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
     }

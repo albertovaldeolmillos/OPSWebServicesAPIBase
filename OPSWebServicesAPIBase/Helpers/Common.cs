@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Web;
+using static OPSWebServicesAPIBase.Models.ErrorText;
 
 namespace OPSWebServicesAPIBase.Helpers
 {
@@ -34,6 +35,23 @@ namespace OPSWebServicesAPIBase.Helpers
             var bearerToken = authzHeaders.ElementAt(0);
             token = bearerToken.StartsWith("Bearer ") ? bearerToken.Substring(7) : bearerToken;
             return true;
+        }
+
+        public static int GetSeverityError(int codeError)
+        {
+            SeverityError severityError = SeverityError.Critical;
+            List<int> codesWarning = new List<int> { -2, -3, -4, -5, -6, -7, -8, -20, -21, -22, -23, -25, -27, -28, -30, -31, -32, -33, -250, -300, -301, -301, -302, -303, -304, -305 };
+            List<int> codesException = new List<int> { -9, -12, -24, -26 };
+            List<int> codesCritical = new List<int> { -1, -10, -11, -13, -14, -29, -290 };
+            List<int> codesLow = new List<int> { -230, -231, -232, -233, -234, -235, -236, -237 };
+            for (int i = -100; i >= -131; i--) codesCritical.Add(i);
+
+            if (codesWarning.Contains(codeError)) { severityError = SeverityError.Warning; }
+            if (codesException.Contains(codeError)) { severityError = SeverityError.Exception; }
+            if (codesCritical.Contains(codeError)) { severityError = SeverityError.Critical; }
+            if (codesLow.Contains(codeError)) { severityError = SeverityError.Low; }
+
+            return (int)severityError;
         }
     }
 }

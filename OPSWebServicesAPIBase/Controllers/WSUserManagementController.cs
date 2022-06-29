@@ -5,6 +5,7 @@ using System.Web.Script.Serialization;
 using System.Net.Http;
 using System.Configuration;
 using System.Net.Http.Headers;
+using static OPSWebServicesAPIBase.Models.ErrorText;
 
 namespace OPSWebServicesAPIBase.Controllers
 {
@@ -21,25 +22,37 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("LoginUserAPI")]
         public ResultLoginInfo LoginUserAPI([FromBody] UserLogin userLogin)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/LoginUserAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var responseI = client.PostAsJsonAsync(urlBase, userLogin).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/LoginUserAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultLoginInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var responseI = client.PostAsJsonAsync(urlBase, userLogin).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultLoginInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultLoginInfo response = new ResultLoginInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
  
@@ -52,28 +65,40 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("UpdateUserAPI")]
         public ResultUpdateUserInfo UpdateUserAPI([FromBody] User user)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/UpdateUserAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                string token;
-                Common.TryTokenRequest(Request, out token);
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var responseI = client.PostAsJsonAsync(urlBase, user).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/UpdateUserAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultUpdateUserInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    string token;
+                    Common.TryTokenRequest(Request, out token);
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    var responseI = client.PostAsJsonAsync(urlBase, user).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultUpdateUserInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultUpdateUserInfo response = new ResultUpdateUserInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
 
@@ -86,28 +111,40 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("QueryUserOperationsAPI")]
         public ResultListOperationInfo QueryUserOperationsAPI([FromBody] UserOperation userOperation)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryUserOperationsAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                string token;
-                Common.TryTokenRequest(Request, out token);
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var responseI = client.PostAsJsonAsync(urlBase, userOperation).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryUserOperationsAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultListOperationInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    string token;
+                    Common.TryTokenRequest(Request, out token);
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    var responseI = client.PostAsJsonAsync(urlBase, userOperation).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultListOperationInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultListOperationInfo response = new ResultListOperationInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
  
@@ -120,28 +157,40 @@ namespace OPSWebServicesAPIBase.Controllers
         //public ResultUserInfo QueryUserAPI([FromBody] UserQuery userQuery)
         public ResultUserInfo QueryUserAPI()
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryUserAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                string token;
-                Common.TryTokenRequest(Request, out token);
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var responseI = client.GetAsync(urlBase).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryUserAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultUserInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    string token;
+                    Common.TryTokenRequest(Request, out token);
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    var responseI = client.GetAsync(urlBase).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultUserInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultUserInfo response = new ResultUserInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
 
@@ -154,25 +203,37 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("RecoverPasswordAPI")]
         public ResultRecoverPasswordInfo RecoverPasswordAPI([FromBody] UserRecover userRecover)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/RecoverPasswordAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var responseI = client.PostAsJsonAsync(urlBase, userRecover).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/RecoverPasswordAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultRecoverPasswordInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var responseI = client.PostAsJsonAsync(urlBase, userRecover).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultRecoverPasswordInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultRecoverPasswordInfo response = new ResultRecoverPasswordInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
 
@@ -185,25 +246,37 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("VerifyRecoveryPasswordAPI")]
         public ResultVerifyRecoverPasswordInfo VerifyRecoveryPasswordAPI([FromBody] UserRecoverVerify userRecoverVerify)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/VerifyRecoveryPasswordAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var responseI = client.PostAsJsonAsync(urlBase, userRecoverVerify).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/VerifyRecoveryPasswordAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultVerifyRecoverPasswordInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var responseI = client.PostAsJsonAsync(urlBase, userRecoverVerify).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultVerifyRecoverPasswordInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultVerifyRecoverPasswordInfo response = new ResultVerifyRecoverPasswordInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
         /// <summary>
@@ -215,25 +288,37 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("ChangePasswordAPI")]
         public ResultChangePasswordInfo ChangePasswordAPI([FromBody] UserChangePassword userChangePassword)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/ChangePasswordAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var responseI = client.PostAsJsonAsync(urlBase, userChangePassword).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/ChangePasswordAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultChangePasswordInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var responseI = client.PostAsJsonAsync(urlBase, userChangePassword).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultChangePasswordInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultChangePasswordInfo response = new ResultChangePasswordInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
         /// <summary>
@@ -245,25 +330,37 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("RegisterUserAPI")]
         public ResultRegisterUserInfo RegisterUserAPI([FromBody] UserRegister userRegister)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/RegisterUserAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var responseI = client.PostAsJsonAsync(urlBase, userRegister).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/RegisterUserAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultRegisterUserInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var responseI = client.PostAsJsonAsync(urlBase, userRegister).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultRegisterUserInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultRegisterUserInfo response = new ResultRegisterUserInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
         /// <summary>
@@ -283,28 +380,40 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("QueryUserCreditAPI")]
         public ResultCreditUserInfo QueryUserCreditAPI()
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryUserCreditAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                string token;
-                Common.TryTokenRequest(Request, out token);
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var responseI = client.GetAsync(urlBase).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryUserCreditAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultCreditUserInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    string token;
+                    Common.TryTokenRequest(Request, out token);
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    var responseI = client.GetAsync(urlBase).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultCreditUserInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultCreditUserInfo response = new ResultCreditUserInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
 
@@ -325,28 +434,40 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("RechargeUserCreditAPI")]
         public ResultUserRechargeInfo RechargeUserCreditAPI([FromBody] UserRechargeQuery userRechargeQuery)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/RechargeUserCreditAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                string token;
-                Common.TryTokenRequest(Request, out token);
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var responseI = client.PostAsJsonAsync(urlBase, userRechargeQuery).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/RechargeUserCreditAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultUserRechargeInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    string token;
+                    Common.TryTokenRequest(Request, out token);
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    var responseI = client.PostAsJsonAsync(urlBase, userRechargeQuery).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultUserRechargeInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultUserRechargeInfo response = new ResultUserRechargeInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
         /// <summary>
@@ -366,28 +487,40 @@ namespace OPSWebServicesAPIBase.Controllers
         [Route("QueryUserReportAPI")]
         public ResultUserReportInfo QueryUserReportAPI([FromBody] UserReportQuery userReportQuery)
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryUserReportAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                string token;
-                Common.TryTokenRequest(Request, out token);
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var responseI = client.PostAsJsonAsync(urlBase, userReportQuery).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/QueryUserReportAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultUserReportInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    string token;
+                    Common.TryTokenRequest(Request, out token);
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    var responseI = client.PostAsJsonAsync(urlBase, userReportQuery).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultUserReportInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultUserReportInfo response = new ResultUserReportInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
         /// <summary>
@@ -399,28 +532,40 @@ namespace OPSWebServicesAPIBase.Controllers
         //public ResultUserInfo QueryUserAPI([FromBody] UserQuery userQuery)
         public ResultUpdateUserInfo CancelUserAccountAPI()
         {
-            string cityId = "";
-            if (!Common.TryCityIdRequest(Request, out cityId))
-                cityId = ConfigurationManager.AppSettings["cityDefault"];
-            string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/CancelUserAccountAPI";
-
-            string responseString = "";
-            using (var client = new System.Net.Http.HttpClient())
+            try
             {
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                string token;
-                Common.TryTokenRequest(Request, out token);
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var responseI = client.GetAsync(urlBase).Result;
-                if (responseI.IsSuccessStatusCode)
-                {
-                    responseString = responseI.Content.ReadAsStringAsync().Result;
-                }
-            }
+                string cityId = "";
+                if (!Common.TryCityIdRequest(Request, out cityId))
+                    cityId = ConfigurationManager.AppSettings["cityDefault"];
+                string urlBase = ConfigurationManager.AppSettings["urlBase" + cityId].ToString() + "/CancelUserAccountAPI";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            return jsonSerializer.Deserialize<ResultUpdateUserInfo>(responseString);
+                string responseString = "";
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    //client.DefaultRequestHeaders.Accept.Clear();
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    string token;
+                    Common.TryTokenRequest(Request, out token);
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    var responseI = client.GetAsync(urlBase).Result;
+                    if (responseI.IsSuccessStatusCode)
+                    {
+                        responseString = responseI.Content.ReadAsStringAsync().Result;
+                    }
+                }
+                if (responseString == "") throw new System.Exception();
+                JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+                return jsonSerializer.Deserialize<ResultUpdateUserInfo>(responseString);
+            }
+            catch (System.Exception)
+            {
+                ResultUpdateUserInfo response = new ResultUpdateUserInfo();
+                response.isSuccess = false;
+                int error = (int)ResultType.Result_Error_Generic;
+                response.error = new Error(error, Common.GetSeverityError(error));
+                response.value = null;
+                return response;
+            }
         }
 
 
