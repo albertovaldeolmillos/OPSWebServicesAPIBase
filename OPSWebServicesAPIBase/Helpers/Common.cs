@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Web;
@@ -11,7 +12,8 @@ namespace OPSWebServicesAPIBase.Helpers
     {
         public static bool TryCityIdRequest(HttpRequestMessage request, out string cityId)
         {
-            string[] cities = { "10", "5", "6", "3", "73", "79", "81", "61" };
+            string[] cities = ConfigurationManager.AppSettings["cities"].Split(',');
+            //string[] cities = { "10", "5", "6", "3", "73", "79", "81", "61" };
             cityId = "";
             IEnumerable<string> headers;
             if (!request.Headers.TryGetValues("CityId", out headers) || headers.Count() > 1)
